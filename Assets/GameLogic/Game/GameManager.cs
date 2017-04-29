@@ -64,28 +64,30 @@ public class GameManager : MonoBehaviour {
 
     private void CreateShipsForPlayers()
     {
-        float offset = -20f;
+        float offset = -10f;
         foreach (var player in players)
         {
             spawnShips(player, offset, player.startRotation);
-            offset = offset + 25f;
+            offset = offset + 20f;
         }
     }
 
     private void spawnShips(Player player, float offset, float rotation)
     {
         float space = 0f;
+        float xOrigin = -8f;
         for (var x = 0; x < 5; x++)
         {
             Quaternion qRotation = Quaternion.AngleAxis(rotation, Vector3.up);
-            Transform ship = SpawnShip(player, offset, space, x, qRotation);
+            Transform ship = SpawnShip(player, offset, space, xOrigin, qRotation);
             player.AddShip(ship);
             gameContext.initiativeManager.AddToInitiativeList(ship);
             space += 2f;
+            xOrigin += 2f;
         }
     }
 
-    private Transform SpawnShip(Player player, float offset, float space, int x, Quaternion qRotation)
+    private Transform SpawnShip(Player player, float offset, float space, float x, Quaternion qRotation)
     {
         Transform ship = Instantiate(gameContext.shipPrefab, new Vector3(x + space, 1, offset), qRotation);
 
