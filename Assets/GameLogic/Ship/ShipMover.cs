@@ -58,7 +58,7 @@ public class ShipMover : MonoBehaviour {
     {
         if (moving)
         {
-            destination = transform.position;
+            destination = transform.position + (transform.forward * -0.2f);
         }        
     }
 }
