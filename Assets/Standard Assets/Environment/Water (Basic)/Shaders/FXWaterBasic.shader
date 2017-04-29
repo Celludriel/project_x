@@ -82,7 +82,7 @@ Shader "FX/Water (Basic)" {
 
 					UNITY_APPLY_FOG(i.fogCoord, col);
 					if(i.worldPos.xy.x > 40 || i.worldPos.xy.x < -40 || i.worldPos.xyz.z > 40 || i.worldPos.xyz.z < -40){
-						return _horizonColor;
+						return col/3;
 					}
 					return col;
 				}
