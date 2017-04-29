@@ -18,6 +18,10 @@ public class RtsCamera : MonoBehaviour {
         public float zoomStep = 5f;
         public float maxZoom = 10f;
         public float minZoom = 30f;
+        public float northLimit = 10f;
+        public float eastLimit = 10f;
+        public float southLimit = 10f;
+        public float westLimit = 10f;
 
         [HideInInspector]
         public float newDistance = 40f;
@@ -117,6 +121,26 @@ public class RtsCamera : MonoBehaviour {
         {
             targetPos += transform.right * (currentMousePos.x - previousMousePos.x) * position.panSmooth * panDirection * Time.deltaTime;
             targetPos += Vector3.Cross(transform.right, Vector3.up) * (currentMousePos.y - previousMousePos.y) * position.panSmooth * panDirection * Time.deltaTime;
+            
+            if(targetPos.z > position.northLimit)
+            {
+                targetPos.z = position.northLimit;
+            }
+
+            if (targetPos.x > position.eastLimit)
+            {
+                targetPos.x = position.eastLimit;
+            }
+
+            if (targetPos.z < -Mathf.Abs(position.southLimit))
+            {
+                targetPos.z = -Mathf.Abs(position.southLimit);
+            }
+
+            if (targetPos.x < -Mathf.Abs(position.westLimit))
+            {
+                targetPos.x = -Mathf.Abs(position.westLimit);
+            }
         }
         transform.position = targetPos;
     }
