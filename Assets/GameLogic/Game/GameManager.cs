@@ -65,12 +65,12 @@ public class GameManager : MonoBehaviour {
         float offset = -10f;
         foreach (var player in players)
         {
-            spawnShips(player, offset, player.startRotation);
+            SpawnShips(player, offset, player.startRotation);
             offset = offset + 20f;
         }
     }
 
-    private void spawnShips(Player player, float offset, float rotation)
+    private void SpawnShips(Player player, float offset, float rotation)
     {
         float space = 0f;
         float xOrigin = -8f;
@@ -110,8 +110,7 @@ public class GameManager : MonoBehaviour {
         shipComponent.SetSelected(true);
         shipComponent.CalculateTargetArc();
         gameState = GameState.TURN;
-        turnState = TurnState.ACTION_ONE;
-        SwitchControlPanelColor();
+        ResetTurn();
     }
 
     private void SwitchControlPanelColor()
@@ -150,7 +149,13 @@ public class GameManager : MonoBehaviour {
         RemoveAllTargets();
         shipComponent.CalculateTargetArc();
 
+        ResetTurn();
+    }
+
+    private void ResetTurn()
+    {
         SwitchControlPanelColor();
         turnState = TurnState.ACTION_ONE;
+        gameContext.buttonManager.ToggleButtons(true);
     }
 }

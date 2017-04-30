@@ -1,19 +1,25 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ButtonManager : MonoBehaviour {
 
     public enum ButtonState { IDLE, MOVE, CAST_EFFECT }
     public GameContext gameContext;
 
-    private ButtonState currentState = ButtonState.IDLE;
-    private CastButtonProperties.CAST_EFFECTS effectToCast = CastButtonProperties.CAST_EFFECTS.NONE;
+    [HideInInspector]
+    public CastEffectEnum effectToCast = CastEffectEnum.NONE;
+
+    [HideInInspector]
+    public ButtonState currentState = ButtonState.IDLE;
+
+    private List<GameObject> activeButtons = new List<GameObject>();
 
     public void ButtonClicked()
     {
         if (EventSystem.current != null 
-            && EventSystem.current.currentSelectedGameObject != null
-            && currentState == ButtonState.IDLE)
+            && EventSystem.current.currentSelectedGameObject != null)
         {
             HandleMovementButton();
             HandleCastEffectButton();
@@ -29,30 +35,57 @@ public class ButtonManager : MonoBehaviour {
         }
     }
 
+    public void DisableActionButtons()
+    {
+        UnityEngine.UI.Button[] buttons = gameContext.canvas.GetComponentsInChildren<UnityEngine.UI.Button>();
+        foreach (var button in buttons)
+        {
+            if(button.name == "ShootButton" || button.name == "SpecialButton")
+            {
+                button.interactable = false;
+            }            
+        }
+    }
+
     public void EndButtonAction()
     {
         currentState = ButtonState.IDLE;
-        effectToCast = CastButtonProperties.CAST_EFFECTS.NONE;
+        effectToCast = CastEffectEnum.NONE;
+        foreach(GameObject buttonObject in activeButtons)
+        {
+            buttonObject.GetComponent<Image>().color = Color.white;
+        }
+        activeButtons.Clear();
+        gameContext.gameManager.gameState = GameManager.GameState.SWITCH;
     }
 
     private void HandleMovementButton()
     {
-        MovementButtonProperties movementButton = EventSystem.current.currentSelectedGameObject.GetComponent<MovementButtonProperties>();
-        if (movementButton != null)
+        if(currentState == ButtonState.IDLE)
         {
-            currentState = ButtonState.MOVE;
-            ShipMover shipMover = GetActiveShipMover();
-            shipMover.Move(movementButton.degrees, 4f);
-        }        
+            MovementButtonProperties movementButton = EventSystem.current.currentSelectedGameObject.GetComponent<MovementButtonProperties>();
+            if (movementButton != null)
+            {
+                currentState = ButtonState.MOVE;
+                ShipMover shipMover = GetActiveShipMover();
+                shipMover.Move(movementButton.degrees, 4f);
+            }
+        }
     }
 
     private void HandleCastEffectButton()
     {
-        CastButtonProperties castEffectButton = EventSystem.current.currentSelectedGameObject.GetComponent<CastButtonProperties>();
-        if (castEffectButton != null)
+        if (currentState == ButtonState.IDLE)
         {
-            currentState = ButtonState.CAST_EFFECT;
-            effectToCast = castEffectButton.castEffect;
+            CastButtonProperties castEffectButton = EventSystem.current.currentSelectedGameObject.GetComponent<CastButtonProperties>();
+            if (castEffectButton != null)
+            {
+                GameObject buttonObject = castEffectButton.gameObject;
+                buttonObject.GetComponent<Image>().color = Color.green;
+                currentState = ButtonState.CAST_EFFECT;
+                effectToCast = castEffectButton.castEffect;
+                activeButtons.Add(buttonObject);
+            }
         }
     }
 

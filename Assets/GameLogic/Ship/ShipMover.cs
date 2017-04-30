@@ -28,8 +28,7 @@ public class ShipMover : MonoBehaviour {
         {
             moving = false;
             gameContext.buttonManager.ToggleButtons(true);
-            gameContext.buttonManager.EndButtonAction();
-            gameContext.gameManager.gameState = GameManager.GameState.SWITCH;
+            gameContext.buttonManager.EndButtonAction();            
         }
 	}
 

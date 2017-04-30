@@ -110,4 +110,20 @@ public class Ship : WorldObject {
         GameObject canvas = gameContext.canvas.gameObject;
         canvas.transform.FindChild("HoverInfoPanel").gameObject.SetActive(false);
     }
+
+    public void OnMouseUpAsButton()
+    {
+        ButtonManager buttonManager = gameContext.buttonManager;        
+        if (buttonManager.currentState == ButtonManager.ButtonState.CAST_EFFECT
+            && isTargeted)
+        {
+            CastEffectEnum effectToCast = buttonManager.effectToCast;
+            CastEffectResolver resolver = gameContext.castEffectFactory.GetCastEffectResolver(effectToCast);
+            Ship origin = gameContext.initiativeManager.GetCurrentActiveShip().GetComponent<Ship>();
+            resolver.ResolveCastEffect(origin, this);
+            gameContext.informationManager.UpdateHoverInfoPanel(this);
+            buttonManager.EndButtonAction();
+            buttonManager.DisableActionButtons();
+        }        
+    }
 }
