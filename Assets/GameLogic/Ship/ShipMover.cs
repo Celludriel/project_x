@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ShipMover : MonoBehaviour {
 
@@ -31,6 +28,7 @@ public class ShipMover : MonoBehaviour {
         {
             moving = false;
             gameContext.buttonManager.ToggleButtons(true);
+            gameContext.buttonManager.EndButtonAction();
             gameContext.gameManager.gameState = GameManager.GameState.SWITCH;
         }
 	}
