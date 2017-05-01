@@ -49,14 +49,19 @@ public class ButtonManager : MonoBehaviour {
 
     public void EndButtonAction()
     {
+        CancelButtonAction();
+        gameContext.gameManager.gameState = GameManager.GameState.SWITCH;
+    }
+
+    private void CancelButtonAction()
+    {
         currentState = ButtonState.IDLE;
         effectToCast = CastEffectEnum.NONE;
-        foreach(GameObject buttonObject in activeButtons)
+        foreach (GameObject buttonObject in activeButtons)
         {
             buttonObject.GetComponent<Image>().color = Color.white;
         }
         activeButtons.Clear();
-        gameContext.gameManager.gameState = GameManager.GameState.SWITCH;
     }
 
     private void HandleMovementButton()
@@ -86,6 +91,10 @@ public class ButtonManager : MonoBehaviour {
                 effectToCast = castEffectButton.castEffect;
                 activeButtons.Add(buttonObject);
             }
+        }
+        else if (currentState == ButtonState.CAST_EFFECT)
+        {
+            CancelButtonAction();
         }
     }
 
