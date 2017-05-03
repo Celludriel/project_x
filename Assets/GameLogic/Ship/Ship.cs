@@ -117,11 +117,10 @@ public class Ship : WorldObject {
         if (buttonManager.currentState == ButtonManager.ButtonState.CAST_EFFECT
             && isTargeted)
         {
-            CastEffectEnum effectToCast = buttonManager.effectToCast;
-            CastEffectResolver resolver = gameContext.castEffectFactory.GetCastEffectResolver(effectToCast);
             Ship origin = gameContext.initiativeManager.GetCurrentActiveShip().GetComponent<Ship>();
-            resolver.ResolveCastEffect(origin, this);
-            gameContext.informationManager.UpdateHoverInfoPanel(this);
+            CastEffectEnum effectToCast = buttonManager.effectToCast;
+            CastEffectResolver resolver = gameContext.castEffectFactory.GetCastEffectResolver(effectToCast, origin, this);
+            gameContext.castEffectPlayer.AddCastEffectResolver(resolver);            
             buttonManager.EndButtonAction();
             buttonManager.DisableActionButtons();
         }        

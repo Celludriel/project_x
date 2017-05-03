@@ -7,6 +7,7 @@ public class GameContext : MonoBehaviour {
     public ButtonManager buttonManager;
     public InformationManager informationManager;
     public CastEffectFactory castEffectFactory;
+    public CastEffectPlayer castEffectPlayer;
 
     public Canvas canvas;
 
