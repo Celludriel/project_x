@@ -55,7 +55,11 @@ public class ShipMover : MonoBehaviour {
     {
         if (moving)
         {
+            Ship collidedShip = col.collider.gameObject.GetComponent<Ship>();
+            Ship collidingShip = this.gameObject.GetComponent<Ship>();
             destination = transform.position + (transform.forward * -0.2f);
+            CastEffectResolver resolver = gameContext.castEffectFactory.GetCastEffectResolver(CastEffectEnum.CRASH_DAMAGE, collidingShip, collidedShip);
+            gameContext.castEffectPlayer.AddCastEffectResolver(resolver);
         }        
     }
 }

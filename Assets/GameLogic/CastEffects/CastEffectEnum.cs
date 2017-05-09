@@ -3,5 +3,5 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum CastEffectEnum {
-     NONE, NORMAL_DAMAGE, RANDOM_DAMAGE
+     NONE, NORMAL_DAMAGE, RANDOM_DAMAGE, CRASH_DAMAGE
 }

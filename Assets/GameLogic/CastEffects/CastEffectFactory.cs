@@ -11,6 +11,7 @@ public class CastEffectFactory : MonoBehaviour {
         {
             case CastEffectEnum.NORMAL_DAMAGE: return new NormalDamageCastEffect(origin, ship);
             case CastEffectEnum.RANDOM_DAMAGE: return new RandomDamageCastEffect(origin, ship);
+            case CastEffectEnum.CRASH_DAMAGE: return new CrashDamageCastEffect(origin, ship);
             default: throw new System.Exception("No casteffect found for [" + effectToCast + "]");
         }
     }

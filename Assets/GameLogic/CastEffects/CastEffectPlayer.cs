@@ -14,6 +14,7 @@ public class CastEffectPlayer : MonoBehaviour {
             if (currentCastEffect.IsDataEffectCompleted())
             {
                 gameContext.informationManager.UpdateHoverInfoPanel(currentCastEffect.GetTarget());
+                gameContext.informationManager.UpdateShipInfoPanel(currentCastEffect.GetOrigin());
                 currentCastEffect = null;                
             }
         }

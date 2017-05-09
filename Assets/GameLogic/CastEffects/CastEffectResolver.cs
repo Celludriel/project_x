@@ -17,7 +17,7 @@ public abstract class CastEffectResolver {
     public void ResolveCastEffect()
     {
         ResolveVisualEffect(origin, target);
-        if (visualEffectCompleted)
+        if (visualEffectCompleted && !dataEffectCompleted)
         {
             ResolveDataEffect(origin, target);
             dataEffectCompleted = true;
