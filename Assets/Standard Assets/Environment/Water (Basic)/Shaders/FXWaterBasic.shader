@@ -7,6 +7,10 @@ Shader "FX/Water (Basic)" {
 		[NoScaleOffset] _ColorControl ("Reflective color (RGB) fresnel (A) ", 2D) = "" { }
 		[NoScaleOffset] _BumpMap ("Waves Normalmap ", 2D) = "" { }
 		WaveSpeed ("Wave speed (map1 x,y; map2 x,y)", Vector) = (19,9,-16,-7)
+		_leftBorder ("Left border", Float) = -40.0
+		_rightBorder ("Right border", Float) = 40.0
+		_topBorder ("Top border", Float) = 40.0
+		_bottomBorder ("Bottom border", Float) = -40.0
 	}
 
 	CGINCLUDE
@@ -18,6 +22,11 @@ Shader "FX/Water (Basic)" {
 	uniform float4 WaveSpeed;
 	uniform float _WaveScale;
 	uniform float4 _WaveOffset;
+
+	float _leftBorder;
+	float _rightBorder;
+	float _topBorder;
+	float _bottomBorder;
 
 	struct appdata {
 		float4 vertex : POSITION;
@@ -81,7 +90,7 @@ Shader "FX/Water (Basic)" {
 					col.a = _horizonColor.a;
 
 					UNITY_APPLY_FOG(i.fogCoord, col);
-					if(i.worldPos.xy.x > 40 || i.worldPos.xy.x < -40 || i.worldPos.xyz.z > 40 || i.worldPos.xyz.z < -40){
+					if(i.worldPos.xy.x > _rightBorder || i.worldPos.xy.x < _leftBorder || i.worldPos.xyz.z > _topBorder || i.worldPos.xyz.z < _bottomBorder){
 						return col/3;
 					}
 					return col;
