@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
 
     public enum GameState { INIT, TURN, BUSY, SWITCH, GAME_OVER };
-    public enum TurnState { ACTION_ONE, ACTION_TWO };
+    public enum TurnState { ACTION_ONE, ACTION_TWO, FORCED_TURN_SWITCH };
 
     public GameContext gameContext;
 
@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour {
     {
         float space = 0f;
         float xOrigin = -8f;
-        for (var x = 0; x < 5; x++)
+        for (var x = 0; x < 2; x++)
         {
             Quaternion qRotation = Quaternion.AngleAxis(rotation, Vector3.up);
             Transform ship = SpawnShip(player, offset, space, xOrigin, qRotation);
@@ -123,38 +123,63 @@ public class GameManager : MonoBehaviour {
     }
 
     private void DoSwitch()
-    {
+    {        
         switch (turnState)
         {
             case TurnState.ACTION_TWO: SwitchTurn(); break;
-            case TurnState.ACTION_ONE: SwitchAction(); break;            
-        }
-        gameState = GameState.TURN;
+            case TurnState.ACTION_ONE: SwitchAction(); break;
+            case TurnState.FORCED_TURN_SWITCH: SwitchTurn(); break;
+        }        
     }
 
     private void SwitchAction()
     {
-        turnState = TurnState.ACTION_TWO;
         Transform currentActive = gameContext.initiativeManager.GetCurrentActiveShip();
         Ship shipComponent = currentActive.GetComponent<Ship>();
-        RemoveAllTargets();
-        shipComponent.CalculateTargetArc();
+
+        if (shipComponent.isFleeing)
+        {
+            turnState = TurnState.FORCED_TURN_SWITCH;
+            gameState = GameState.SWITCH;
+        }
+        else
+        {
+            turnState = TurnState.ACTION_TWO;
+            RemoveAllTargets();
+            shipComponent.CalculateTargetArc();
+            gameState = GameState.TURN;
+        }
     }
 
     private void SwitchTurn()
     {
-        Transform currentActive = gameContext.initiativeManager.MoveToNextShipInLine();
-        Ship shipComponent = currentActive.GetComponent<Ship>();
+        Transform currentActiveShipTransform = gameContext.initiativeManager.GetCurrentActiveShip();
+        Ship currentActiveShip = currentActiveShipTransform.GetComponent<Ship>();
+        Transform nextActiveShipTransform = gameContext.initiativeManager.MoveToNextShipInLine();
+        Ship nextActiveShip = nextActiveShipTransform.GetComponent<Ship>();
 
         RemoveAllTargets();
-        shipComponent.CalculateTargetArc();
+        nextActiveShip.CalculateTargetArc();
+
+        HandleFleeingIfAvailable(currentActiveShip);
 
         ResetTurn();
+    }
+
+    private void HandleFleeingIfAvailable(Ship currentActiveShip)
+    {
+        if (currentActiveShip.isFleeing)
+        {
+            gameContext.initiativeManager.RemoveShip(currentActiveShip);
+            currentActiveShip.owner.RemoveShip(currentActiveShip);
+            Destroy(currentActiveShip.gameObject);
+        }
     }
 
     private void ResetTurn()
     {
         SwitchControlPanelColor();
+        gameState = GameState.TURN;
         turnState = TurnState.ACTION_ONE;
         gameContext.buttonManager.ToggleButtons(true);
     }

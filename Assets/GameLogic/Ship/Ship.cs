@@ -17,6 +17,9 @@ public class Ship : WorldObject {
     public bool isTargeted = false;
 
     [HideInInspector]
+    public bool isFleeing = false;
+
+    [HideInInspector]
     public GameContext gameContext;
 	
     public void SetSelected(bool select)
@@ -69,33 +72,9 @@ public class Ship : WorldObject {
         CalculateArcHalf(startingAngle, stepAngle);
     }
 
-    private void CalculateArcHalf(Quaternion startingAngle, Quaternion stepAngle)
+    public void SetFleeing()
     {
-        RaycastHit hit;
-        Quaternion angle = transform.rotation * startingAngle;
-        Vector3 direction = angle * Vector3.forward;
-        Vector3 pos = transform.position;
-        for (var i = 0; i < 40; i++)
-        {
-            if (Physics.Raycast(pos, direction, out hit, 10))
-            {
-                Collider collidedObject = hit.collider;
-                Ship enemy = collidedObject.GetComponent<Ship>();
-                if (enemy != this)
-                {
-                    Debug.DrawRay(pos, direction * 10, Color.red, 20f);
-                    if (!enemy.isTargeted && enemy.owner != this.owner)
-                    {
-                        enemy.SetTargeted(true);
-                    }
-                }
-            }
-            else
-            {
-                Debug.DrawRay(pos, direction * 10, Color.green, 20f);
-            }
-            direction = stepAngle * direction;
-        }
+        isFleeing = true;
     }
 
     public void OnMouseEnter()
@@ -124,5 +103,34 @@ public class Ship : WorldObject {
             buttonManager.EndButtonAction();
             buttonManager.DisableActionButtons();
         }        
+    }
+
+    private void CalculateArcHalf(Quaternion startingAngle, Quaternion stepAngle)
+    {
+        RaycastHit hit;
+        Quaternion angle = transform.rotation * startingAngle;
+        Vector3 direction = angle * Vector3.forward;
+        Vector3 pos = transform.position;
+        for (var i = 0; i < 40; i++)
+        {
+            if (Physics.Raycast(pos, direction, out hit, 10))
+            {
+                Collider collidedObject = hit.collider;
+                Ship enemy = collidedObject.GetComponent<Ship>();
+                if (enemy != this)
+                {
+                    Debug.DrawRay(pos, direction * 10, Color.red, 20f);
+                    if (!enemy.isTargeted && enemy.owner != this.owner)
+                    {
+                        enemy.SetTargeted(true);
+                    }
+                }
+            }
+            else
+            {
+                Debug.DrawRay(pos, direction * 10, Color.green, 20f);
+            }
+            direction = stepAngle * direction;
+        }
     }
 }

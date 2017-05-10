@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class ShipMover : MonoBehaviour {
 
@@ -28,7 +29,9 @@ public class ShipMover : MonoBehaviour {
         {
             moving = false;
             gameContext.buttonManager.ToggleButtons(true);
-            gameContext.buttonManager.EndButtonAction();            
+            gameContext.buttonManager.EndButtonAction();
+
+            CheckForFleeing();
         }
 	}
 
@@ -61,5 +64,14 @@ public class ShipMover : MonoBehaviour {
             CastEffectResolver resolver = gameContext.castEffectFactory.GetCastEffectResolver(CastEffectEnum.CRASH_DAMAGE, collidingShip, collidedShip);
             gameContext.castEffectPlayer.AddCastEffectResolver(resolver);
         }        
+    }
+
+    private void CheckForFleeing()
+    {
+        if(transform.position.x > 40.0 || transform.position.x < -40.0 || transform.position.z > 40.0 || transform.position.z < -40.0)
+        {
+            Ship ship = this.gameObject.GetComponent<Ship>();
+            ship.SetFleeing();
+        }
     }
 }

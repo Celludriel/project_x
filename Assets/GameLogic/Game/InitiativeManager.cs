@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InitiativeManager : MonoBehaviour {
@@ -19,10 +20,20 @@ public class InitiativeManager : MonoBehaviour {
     {
         Transform currentActiveShip = GetCurrentActiveShip();
         currentActiveShip.GetComponent<Ship>().SetSelected(false);
-        initiativeList.RemoveFirst();
-        initiativeList.AddLast(currentActiveShip);
+
+        if(initiativeList.Count > 1)
+        {
+            initiativeList.RemoveFirst();
+            initiativeList.AddLast(currentActiveShip);
+        }
+
         currentActiveShip = GetCurrentActiveShip();
         currentActiveShip.GetComponent<Ship>().SetSelected(true);
         return currentActiveShip;
+    }
+
+    public void RemoveShip(Ship currentActiveShip)
+    {
+        initiativeList.Remove(currentActiveShip.transform);
     }
 }

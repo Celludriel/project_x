@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player {
@@ -34,5 +35,10 @@ public class Player {
     public override string ToString()
     {
         return playerName;
+    }
+
+    public void RemoveShip(Ship currentActiveShip)
+    {
+        playerShips.Remove(currentActiveShip.transform);
     }
 }
