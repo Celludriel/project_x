@@ -61,15 +61,8 @@ public class Ship : WorldObject {
 
     public void CalculateTargetArc()
     {
-        Quaternion startingAngle = Quaternion.AngleAxis(50, Vector3.up);
-        Quaternion stepAngle = Quaternion.AngleAxis(2, Vector3.up);
-
-        CalculateArcHalf(startingAngle, stepAngle);
-
-        startingAngle = Quaternion.AngleAxis(-50, Vector3.up);
-        stepAngle = Quaternion.AngleAxis(-2, Vector3.up);
-
-        CalculateArcHalf(startingAngle, stepAngle);
+        CalculateArcHalf(90);
+        CalculateArcHalf(-90);
     }
 
     public void SetFleeing()
@@ -105,13 +98,16 @@ public class Ship : WorldObject {
         }        
     }
 
-    private void CalculateArcHalf(Quaternion startingAngle, Quaternion stepAngle)
+    private void CalculateArcHalf(int targetAngleDegrees)
     {
+        Quaternion targetAngle = Quaternion.AngleAxis(targetAngleDegrees, Vector3.up);
         RaycastHit hit;
-        Quaternion angle = transform.rotation * startingAngle;
+        Quaternion angle = transform.rotation * targetAngle;
         Vector3 direction = angle * Vector3.forward;
+
         Vector3 pos = transform.position;
-        for (var i = 0; i < 40; i++)
+        pos.z = pos.z - 0.7f;
+        for (var i = 0; i < 17; i++)
         {
             if (Physics.Raycast(pos, direction, out hit, 10))
             {
@@ -130,7 +126,7 @@ public class Ship : WorldObject {
             {
                 Debug.DrawRay(pos, direction * 10, Color.green, 20f);
             }
-            direction = stepAngle * direction;
+            pos = pos + (transform.forward * 0.1f);
         }
     }
 }
