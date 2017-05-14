@@ -20,7 +20,6 @@ public class RandomDamageCastEffect : CastEffectResolver
                 target.health += -(UnityEngine.Random.Range(10, 30));
             }
         }
-        MoveToClean();
     }
 
     internal override void ResolveVisualEffect()

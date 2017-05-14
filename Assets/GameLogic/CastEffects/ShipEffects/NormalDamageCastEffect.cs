@@ -20,7 +20,6 @@ public class NormalDamageCastEffect : CastEffectResolver
                 target.health += -20;
             }
         }
-        MoveToClean();
     }
 
     internal override void ResolveVisualEffect()

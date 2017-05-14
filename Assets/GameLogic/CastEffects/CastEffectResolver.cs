@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public abstract class CastEffectResolver {
 
-    public enum CastEffectState { INIT, VISUAL, DATA, CLEAN, FINISHED }
+    public enum CastEffectState { INIT, BUSY, VISUAL, DATA, CLEAN, FINISHED }
 
     public GameContext gameContext;
 
@@ -39,8 +39,10 @@ public abstract class CastEffectResolver {
 
         if(state == CastEffectState.DATA)
         {
+            MoveToBusy();
             ResolveDataEffect();
             FinishDataEffect();
+            MoveToClean();
         }
 
         if (state == CastEffectState.CLEAN)
@@ -61,6 +63,11 @@ public abstract class CastEffectResolver {
             gameContext.informationManager.UpdateHoverInfoPanel(target);
         }
         gameContext.informationManager.UpdateShipInfoPanel(origin);
+    }
+
+    protected void MoveToBusy()
+    {
+        state = CastEffectState.BUSY;
     }
 
     protected void MoveToData()
