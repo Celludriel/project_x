@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class InitiativeManager : MonoBehaviour {
@@ -35,5 +34,10 @@ public class InitiativeManager : MonoBehaviour {
     public void RemoveShip(Ship currentActiveShip)
     {
         initiativeList.Remove(currentActiveShip.transform);
+    }
+
+    public List<Transform> GetAllShips()
+    {
+        return new List<Transform>(initiativeList);
     }
 }

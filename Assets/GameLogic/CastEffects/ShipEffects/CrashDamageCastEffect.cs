@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class CrashDamageCastEffect : CastEffectResolver
+﻿public class CrashDamageCastEffect : CastEffectResolver
 {
     public CrashDamageCastEffect(Ship origin, Ship target) : base(origin, target)
     {
@@ -11,6 +6,7 @@ public class CrashDamageCastEffect : CastEffectResolver
 
     internal override void ResolveDataEffect(Ship origin, Ship target)
     {
+        targets.Add(target);
         target.health += -15;
         origin.health += -10;
     }
@@ -18,5 +14,9 @@ public class CrashDamageCastEffect : CastEffectResolver
     internal override void ResolveVisualEffect(Ship origin, Ship target)
     {
         SetVisualEffectCompleted();
+    }
+
+    internal override void Cleanup()
+    {       
     }
 }

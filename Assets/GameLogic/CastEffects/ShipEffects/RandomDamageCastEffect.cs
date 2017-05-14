@@ -1,21 +1,34 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class RandomDamageCastEffect : CastEffectResolver
 {
-    public RandomDamageCastEffect(Ship origin, Ship target) : base(origin, target)
+
+    public RandomDamageCastEffect(Ship origin) : base(origin)
     {
     }
 
     internal override void ResolveDataEffect(Ship origin, Ship target)
     {
-        target.health += -(UnityEngine.Random.Range(10, 30));
+        List<Transform> allShips = gameContext.initiativeManager.GetAllShips();
+        foreach(Transform shipObject in allShips)
+        {
+            target = shipObject.GetComponent<Ship>();
+            if (target.isTargeted)
+            {
+                targets.Add(target);
+                target.health += -(UnityEngine.Random.Range(10, 30));
+            }
+        }        
     }
 
     internal override void ResolveVisualEffect(Ship origin, Ship target)
     {
         SetVisualEffectCompleted();
+    }
+
+    internal override void Cleanup()
+    {
+        gameContext.buttonManager.EndButtonAction();
     }
 }

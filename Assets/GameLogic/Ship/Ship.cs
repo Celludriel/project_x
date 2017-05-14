@@ -83,21 +83,6 @@ public class Ship : WorldObject {
         canvas.transform.FindChild("HoverInfoPanel").gameObject.SetActive(false);
     }
 
-    public void OnMouseUpAsButton()
-    {
-        ButtonManager buttonManager = gameContext.buttonManager;        
-        if (buttonManager.currentState == ButtonManager.ButtonState.CAST_EFFECT
-            && isTargeted)
-        {
-            Ship origin = gameContext.initiativeManager.GetCurrentActiveShip().GetComponent<Ship>();
-            CastEffectEnum effectToCast = buttonManager.effectToCast;
-            CastEffectResolver resolver = gameContext.castEffectFactory.GetCastEffectResolver(effectToCast, origin, this);
-            gameContext.castEffectPlayer.AddCastEffectResolver(resolver);            
-            buttonManager.EndButtonAction();
-            buttonManager.DisableActionButtons();
-        }        
-    }
-
     private void CalculateArcHalf(int targetAngleDegrees)
     {
         Quaternion targetAngle = Quaternion.AngleAxis(targetAngleDegrees, Vector3.up);

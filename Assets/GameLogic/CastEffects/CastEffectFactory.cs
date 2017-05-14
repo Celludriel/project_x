@@ -1,18 +1,25 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CastEffectFactory : MonoBehaviour {
 
-    public CastEffectResolver GetCastEffectResolver(CastEffectEnum effectToCast, Ship origin, Ship ship)
+    public GameContext gameContext;
+
+    public CastEffectResolver GetCastEffectResolver(CastEffectEnum effectToCast, Ship origin)
     {
+        return this.GetCastEffectResolver(effectToCast, origin, null);
+    }
+
+    public CastEffectResolver GetCastEffectResolver(CastEffectEnum effectToCast, Ship origin, Ship target)
+    {
+        CastEffectResolver retValue = null;
         switch (effectToCast)
         {
-            case CastEffectEnum.NORMAL_DAMAGE: return new NormalDamageCastEffect(origin, ship);
-            case CastEffectEnum.RANDOM_DAMAGE: return new RandomDamageCastEffect(origin, ship);
-            case CastEffectEnum.CRASH_DAMAGE: return new CrashDamageCastEffect(origin, ship);
+            case CastEffectEnum.NORMAL_DAMAGE: retValue = new NormalDamageCastEffect(origin);break;
+            case CastEffectEnum.RANDOM_DAMAGE: retValue = new RandomDamageCastEffect(origin); break;
+            case CastEffectEnum.CRASH_DAMAGE: retValue = new CrashDamageCastEffect(origin, target);break;
             default: throw new System.Exception("No casteffect found for [" + effectToCast + "]");
         }
+        retValue.gameContext = gameContext;
+        return retValue;
     }
 }

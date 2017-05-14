@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class ButtonManager : MonoBehaviour {
 
@@ -35,18 +34,6 @@ public class ButtonManager : MonoBehaviour {
         }
     }
 
-    public void DisableActionButtons()
-    {
-        UnityEngine.UI.Button[] buttons = gameContext.canvas.GetComponentsInChildren<UnityEngine.UI.Button>();
-        foreach (var button in buttons)
-        {
-            if(button.name == "ShootButton" || button.name == "SpecialButton")
-            {
-                button.interactable = false;
-            }            
-        }
-    }
-
     public void EndButtonAction()
     {
         CancelButtonAction();
@@ -57,10 +44,6 @@ public class ButtonManager : MonoBehaviour {
     {
         currentState = ButtonState.IDLE;
         effectToCast = CastEffectEnum.NONE;
-        foreach (GameObject buttonObject in activeButtons)
-        {
-            buttonObject.GetComponent<Image>().color = Color.white;
-        }
         activeButtons.Clear();
     }
 
@@ -85,16 +68,13 @@ public class ButtonManager : MonoBehaviour {
             CastButtonProperties castEffectButton = EventSystem.current.currentSelectedGameObject.GetComponent<CastButtonProperties>();
             if (castEffectButton != null)
             {
-                GameObject buttonObject = castEffectButton.gameObject;
-                buttonObject.GetComponent<Image>().color = Color.green;
                 currentState = ButtonState.CAST_EFFECT;
+                GameObject buttonObject = castEffectButton.gameObject;              
                 effectToCast = castEffectButton.castEffect;
-                activeButtons.Add(buttonObject);
+                Ship origin = gameContext.initiativeManager.GetCurrentActiveShip().GetComponent<Ship>();
+                CastEffectResolver castEffectResolver = gameContext.castEffectFactory.GetCastEffectResolver(effectToCast, origin);
+                gameContext.castEffectPlayer.AddCastEffectResolver(castEffectResolver);
             }
-        }
-        else if (currentState == ButtonState.CAST_EFFECT)
-        {
-            CancelButtonAction();
         }
     }
 

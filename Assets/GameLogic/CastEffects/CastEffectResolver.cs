@@ -1,12 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public abstract class CastEffectResolver {
+
+    public GameContext gameContext;
 
     private bool visualEffectCompleted = false;
     private bool dataEffectCompleted = false;
     private Ship origin, target;
+
+    protected List<Ship> targets = new List<Ship>();
+
+    public CastEffectResolver(Ship origin)
+    {
+        this.origin = origin;
+    }
 
     public CastEffectResolver(Ship origin, Ship target)
     {
@@ -21,6 +28,7 @@ public abstract class CastEffectResolver {
         {
             ResolveDataEffect(origin, target);
             dataEffectCompleted = true;
+            Cleanup();
         }
     }
 
@@ -39,11 +47,12 @@ public abstract class CastEffectResolver {
         return origin;
     }
 
-    public Ship GetTarget()
+    public List<Ship> GetTargets()
     {
-        return target;
+        return targets;
     }
 
     internal abstract void ResolveDataEffect(Ship origin, Ship target);
     internal abstract void ResolveVisualEffect(Ship origin, Ship target);
+    internal abstract void Cleanup();
 }
