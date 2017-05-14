@@ -106,7 +106,7 @@ public class Ship : WorldObject {
         Vector3 direction = angle * Vector3.forward;
 
         Vector3 pos = transform.position;
-        pos.z = pos.z - 0.7f;
+        pos = pos - (transform.forward * 0.7f);
         for (var i = 0; i < 17; i++)
         {
             if (Physics.Raycast(pos, direction, out hit, 10))
