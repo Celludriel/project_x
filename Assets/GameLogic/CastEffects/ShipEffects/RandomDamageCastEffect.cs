@@ -19,16 +19,18 @@ public class RandomDamageCastEffect : CastEffectResolver
                 targets.Add(target);
                 target.health += -(UnityEngine.Random.Range(10, 30));
             }
-        }        
+        }
+        MoveToClean();
     }
 
     internal override void ResolveVisualEffect(Ship origin, Ship target)
     {
-        SetVisualEffectCompleted();
+        MoveToData();
     }
 
     internal override void Cleanup()
     {
         gameContext.buttonManager.EndButtonAction();
+        MoveToFinished();
     }
 }

@@ -19,16 +19,18 @@ public class NormalDamageCastEffect : CastEffectResolver
                 targets.Add(target);
                 target.health += -20;
             }
-        }        
+        }
+        MoveToClean();
     }
 
     internal override void ResolveVisualEffect(Ship origin, Ship target)
     {
-        SetVisualEffectCompleted();
+        MoveToData();
     }
 
     internal override void Cleanup()
     {
         gameContext.buttonManager.EndButtonAction();
+        MoveToFinished();
     }
 }

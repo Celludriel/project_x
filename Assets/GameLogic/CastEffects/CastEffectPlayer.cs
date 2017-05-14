@@ -11,14 +11,8 @@ public class CastEffectPlayer : MonoBehaviour {
         if(currentCastEffect != null)
         {
             currentCastEffect.ResolveCastEffect();
-            if (currentCastEffect.IsDataEffectCompleted())
+            if (currentCastEffect.IsFinished())
             {
-                List<Ship> targets = currentCastEffect.GetTargets();
-                foreach(Ship target in targets)
-                {
-                    gameContext.informationManager.UpdateHoverInfoPanel(target);
-                }
-                gameContext.informationManager.UpdateShipInfoPanel(currentCastEffect.GetOrigin());
                 currentCastEffect = null;                
             }
         }

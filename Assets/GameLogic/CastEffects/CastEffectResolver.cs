@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 public abstract class CastEffectResolver {
 
+    public enum CastEffectState { INIT, VISUAL, DATA, CLEAN, FINISHED }
+
     public GameContext gameContext;
 
-    private bool visualEffectCompleted = false;
-    private bool dataEffectCompleted = false;
+    private CastEffectState state;
     private Ship origin, target;
 
     protected List<Ship> targets = new List<Ship>();
@@ -13,43 +15,67 @@ public abstract class CastEffectResolver {
     public CastEffectResolver(Ship origin)
     {
         this.origin = origin;
+        state = CastEffectState.INIT;
     }
 
     public CastEffectResolver(Ship origin, Ship target)
     {
         this.origin = origin;
         this.target = target;
+        state = CastEffectState.INIT;
     }
 
     public void ResolveCastEffect()
     {
-        ResolveVisualEffect(origin, target);
-        if (visualEffectCompleted && !dataEffectCompleted)
+        if(state == CastEffectState.INIT)
+        {
+            state = CastEffectState.VISUAL;
+        }
+
+        if(state == CastEffectState.VISUAL)
+        {
+            ResolveVisualEffect(origin, target);
+        }
+
+        if(state == CastEffectState.DATA)
         {
             ResolveDataEffect(origin, target);
-            dataEffectCompleted = true;
+            FinishDataEffect();
+        }
+
+        if (state == CastEffectState.CLEAN)
+        {
             Cleanup();
         }
     }
 
-    public void SetVisualEffectCompleted()
+    public bool IsFinished()
     {
-        visualEffectCompleted = true;
+        return state == CastEffectState.FINISHED;
     }
 
-    public bool IsDataEffectCompleted()
+    private void FinishDataEffect()
     {
-        return dataEffectCompleted;
+        foreach (Ship target in targets)
+        {
+            gameContext.informationManager.UpdateHoverInfoPanel(target);
+        }
+        gameContext.informationManager.UpdateShipInfoPanel(origin);
     }
 
-    public Ship GetOrigin()
+    protected void MoveToData()
     {
-        return origin;
+        state = CastEffectState.DATA;
     }
 
-    public List<Ship> GetTargets()
+    protected void MoveToClean()
     {
-        return targets;
+        state = CastEffectState.CLEAN;
+    }
+
+    protected void MoveToFinished()
+    {
+        state = CastEffectState.FINISHED;
     }
 
     internal abstract void ResolveDataEffect(Ship origin, Ship target);
