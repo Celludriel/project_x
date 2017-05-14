@@ -8,7 +8,7 @@ public class NormalDamageCastEffect : CastEffectResolver
     {
     }
 
-    internal override void ResolveDataEffect(Ship origin, Ship target)
+    internal override void ResolveDataEffect()
     {
         List<Transform> allShips = gameContext.initiativeManager.GetAllShips();
         foreach (Transform shipObject in allShips)
@@ -23,7 +23,7 @@ public class NormalDamageCastEffect : CastEffectResolver
         MoveToClean();
     }
 
-    internal override void ResolveVisualEffect(Ship origin, Ship target)
+    internal override void ResolveVisualEffect()
     {
         MoveToData();
     }

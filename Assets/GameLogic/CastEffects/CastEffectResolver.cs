@@ -8,7 +8,7 @@ public abstract class CastEffectResolver {
     public GameContext gameContext;
 
     private CastEffectState state;
-    private Ship origin, target;
+    protected Ship origin, target;
 
     protected List<Ship> targets = new List<Ship>();
 
@@ -34,12 +34,12 @@ public abstract class CastEffectResolver {
 
         if(state == CastEffectState.VISUAL)
         {
-            ResolveVisualEffect(origin, target);
+            ResolveVisualEffect();
         }
 
         if(state == CastEffectState.DATA)
         {
-            ResolveDataEffect(origin, target);
+            ResolveDataEffect();
             FinishDataEffect();
         }
 
@@ -78,7 +78,7 @@ public abstract class CastEffectResolver {
         state = CastEffectState.FINISHED;
     }
 
-    internal abstract void ResolveDataEffect(Ship origin, Ship target);
-    internal abstract void ResolveVisualEffect(Ship origin, Ship target);
+    internal abstract void ResolveVisualEffect();
+    internal abstract void ResolveDataEffect();    
     internal abstract void Cleanup();
 }

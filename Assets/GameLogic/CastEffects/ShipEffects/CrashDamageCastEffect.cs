@@ -4,7 +4,7 @@
     {
     }
 
-    internal override void ResolveDataEffect(Ship origin, Ship target)
+    internal override void ResolveDataEffect()
     {
         targets.Add(target);
         target.health += -15;
@@ -12,7 +12,7 @@
         MoveToClean();
     }
 
-    internal override void ResolveVisualEffect(Ship origin, Ship target)
+    internal override void ResolveVisualEffect()
     {
         MoveToData();
     }
