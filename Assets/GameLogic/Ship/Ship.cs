@@ -73,14 +73,14 @@ public class Ship : WorldObject {
     public void OnMouseEnter()
     {
         GameObject canvas = gameContext.canvas.gameObject;
-        canvas.transform.FindChild("HoverInfoPanel").gameObject.SetActive(true);
+        canvas.transform.Find("HoverInfoPanel").gameObject.SetActive(true);
         gameContext.informationManager.UpdateHoverInfoPanel(this);
     }
 
     public void OnMouseExit()
     {
         GameObject canvas = gameContext.canvas.gameObject;
-        canvas.transform.FindChild("HoverInfoPanel").gameObject.SetActive(false);
+        canvas.transform.Find("HoverInfoPanel").gameObject.SetActive(false);
     }
 
     private void CalculateArcHalf(int targetAngleDegrees)

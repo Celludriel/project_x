@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
-    public enum GameState { INIT, TURN, BUSY, SWITCH, GAME_OVER };
-    public enum TurnState { ACTION_ONE, ACTION_TWO, FORCED_TURN_SWITCH };
+    public enum GameState { INIT, WAITING_FOR_PLAYER_ONE, PLAYER_ONE_CONNECTED, WAITING_FOR_PLAYER_TWO, PLAYER_TWO_CONNECTED, SETUP, TURN, BUSY, SWITCH, GAME_OVER };
+    public enum TurnState { IDLE, ACTION_ONE, ACTION_TWO, FORCED_TURN_SWITCH };
 
     public GameContext gameContext;
 
@@ -21,11 +23,9 @@ public class GameManager : MonoBehaviour {
     void Start ()
     {
         gameState = GameState.INIT;
-        turnState = TurnState.ACTION_ONE;
-        CreatePlayers();
-        CreateShipsForPlayers();
-        SwitchControlPanelColor();
-        DisableHoverPanel();
+        turnState = TurnState.IDLE;
+        // do stuff
+        gameState = GameState.WAITING_FOR_PLAYER_ONE;
     }
 
     // Update is called once per frame
@@ -34,11 +34,43 @@ public class GameManager : MonoBehaviour {
         {
             switch (gameState)
             {
-                case GameState.INIT: SetFirstPlayer(); break;
+                case GameState.SETUP: SetupBattle(); break;
                 case GameState.SWITCH: DoSwitch(); break;
                 default: break;
             }
         }
+    }
+
+    private void SetupBattle()
+    {
+        Debug.Log("Setting up the battle");
+        gameState = GameState.TURN;
+    }
+
+    public void playerConnected(NetworkConnection conn, short playerControllerId)
+    {
+        switch (gameState)
+        {
+            case GameState.WAITING_FOR_PLAYER_ONE: CreateFirstPlayer(conn, playerControllerId); break;
+            case GameState.WAITING_FOR_PLAYER_TWO: CreateSecondPlayer(conn, playerControllerId); break;
+            default: break;
+        }
+    }
+
+    private void CreateSecondPlayer(NetworkConnection conn, short playerControllerId)
+    {
+        Debug.Log(string.Format("Creating second player {0}, {1}", conn, playerControllerId));
+        gameState = GameState.PLAYER_TWO_CONNECTED;
+        players.Add(new Player(conn, playerControllerId, "player two", 180f, gameContext.playerTwoMaterial));
+        gameState = GameState.SETUP;
+    }
+
+    private void CreateFirstPlayer(NetworkConnection conn, short playerControllerId)
+    {
+        Debug.Log(string.Format("Creating first player {0}, {1}", conn, playerControllerId));
+        gameState = GameState.PLAYER_ONE_CONNECTED;
+        players.Add(new Player(conn, playerControllerId, "player one", 0f, gameContext.playerOneMaterial));
+        gameState = GameState.WAITING_FOR_PLAYER_TWO;
     }
 
     public void RemoveAllTargets()
@@ -51,13 +83,7 @@ public class GameManager : MonoBehaviour {
 
     private void DisableHoverPanel()
     {
-        gameContext.canvas.transform.FindChild("HoverInfoPanel").gameObject.SetActive(false);
-    }
-
-    private void CreatePlayers()
-    {
-        players.Add(new Player("player one", 0f, gameContext.playerOneMaterial));
-        players.Add(new Player("player two", 180f, gameContext.playerTwoMaterial));
+        gameContext.canvas.transform.Find("HoverInfoPanel").gameObject.SetActive(false);
     }
 
     private void CreateShipsForPlayers()
@@ -117,7 +143,7 @@ public class GameManager : MonoBehaviour {
     {
         Ship currentActiveShip = gameContext.initiativeManager.GetCurrentActiveShip().GetComponent<Ship>();
         Player owner = currentActiveShip.owner;
-        Transform controlPanel = gameContext.canvas.transform.FindChild("ControlPanel");
+        Transform controlPanel = gameContext.canvas.transform.Find("ControlPanel");
         Image image = controlPanel.GetComponent<Image>();
         image.color = owner.material.color;
     }

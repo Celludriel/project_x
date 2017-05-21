@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class Player {
-
+public class Player
+{
+    public NetworkConnection conn;
+    public short playerControllerId;
     public string playerName = "";
     public float startRotation = 0f;
     public Material material;
     
     private List<Transform> playerShips = new List<Transform>();
 
-    public Player(string playerName, float startRotation, Material material)
+    public Player(NetworkConnection conn, short playerControllerId, string playerName, float startRotation, Material material)
     {
+        this.conn = conn;
+        this.playerControllerId = playerControllerId;
         this.playerName = playerName;
         this.startRotation = startRotation;
         this.material = material;
